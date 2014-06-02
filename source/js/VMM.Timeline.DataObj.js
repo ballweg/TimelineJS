@@ -243,6 +243,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								data_obj.timeline.asset.caption	= getGVar(dd.gsx$mediacaption);
 								data_obj.timeline.asset.credit	= getGVar(dd.gsx$mediacredit);
 								data_obj.timeline.text			= getGVar(dd.gsx$text);
+								data_obj.timeline.maploc		= getGVar(dd.gsx$maplocation);
 								data_obj.timeline.type			= "google spreadsheet";
 							} else if (dd_type.match("era")) {
 								var era = {
@@ -261,6 +262,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 										headline:		getGVar(dd.gsx$headline),
 										text:			getGVar(dd.gsx$text),
 										tag:			getGVar(dd.gsx$tag),
+										maploc:         getGVar(dd.gsx$maplocation),
 										asset: {
 											media:		getGVar(dd.gsx$media),
 											credit:		getGVar(dd.gsx$mediacredit),
@@ -364,6 +366,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								headline:		"",
 								text:			"",
 								tag:			"",
+								maploc:         "",
 								asset: {
 									media:		"",
 									credit:		"",
@@ -409,6 +412,8 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 									column_name = "type";
 								} else if (cell.content == "Tag") {
 									column_name = "tag";
+								} else if (cell.content == "Map Location") {
+									column_name = "maploc";
 								}
 								
 								cellnames.push(column_name);
@@ -431,6 +436,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								data_obj.timeline.asset.caption	= date.caption;
 								data_obj.timeline.asset.credit	= date.credit;
 								data_obj.timeline.text			= date.text;
+								data_obj.timeline.maploc        = date.maploc;
 								data_obj.timeline.type			= "google spreadsheet";
 							} else if (date.type.match("era")) {
 								var era = {
@@ -449,6 +455,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 										headline:		date.headline,
 										text:			date.text,
 										tag:			date.tag,
+										maploc:         date.maploc,
 										asset: {
 											media:		date.media,
 											credit:		date.credit,
@@ -456,13 +463,12 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 											thumbnail:	date.thumbnail
 										}
 								};
-							
 								data_obj.timeline.date.push(date);
 							}
 							
 						}
 						
-						//trace(cellnames);
+						trace(cellnames);
 						//trace(max_row);
 						//trace(list);
 						
@@ -764,8 +770,8 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 		
 		/*	TEMPLATE OBJECTS
 		================================================== */
-		data_template_obj: {  "timeline": { "headline":"", "description":"", "asset": { "media":"", "credit":"", "caption":"" }, "date": [], "era":[] } },
-		date_obj: {"startDate":"2012,2,2,11,30", "headline":"", "text":"", "asset": {"media":"http://youtu.be/vjVfu8-Wp6s", "credit":"", "caption":"" }, "tags":"Optional"}
+		data_template_obj: {  "timeline": { "headline":"", "description":"", "maploc":"", "asset": { "media":"", "credit":"", "caption":"" }, "date": [], "era":[] } },
+		date_obj: {"startDate":"2012,2,2,11,30", "headline":"", "text":"", "maploc":"", "asset": {"media":"http://youtu.be/vjVfu8-Wp6s", "credit":"", "caption":"" }, "tags":"Optional"}
 	
 	};
 	

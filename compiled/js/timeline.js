@@ -487,9 +487,6 @@ if(typeof VMM != 'undefined') {
 		var _event_type = "click";
 		var _event_data = {};
 		
-		//  Added by CDU – Jeff Ballweg 15/05/13     Scouting event bindings
-		/*console.log("Binding event. Handler: "+the_handler+" Type: "+the_event_type + " Element ID: " + $(element).id + " Element Class: " + $(element).attr('class'));*/
-		
 		if (the_event_type != null && the_event_type != "") {
 			_event_type = the_event_type;
 		}
@@ -4730,7 +4727,7 @@ if(typeof VMM != 'undefined' && typeof VMM.DragSlider == 'undefined') {
 				start:		0,
 				end:		0
 			},
-			touch:			true,
+			touch:			false,
 			ease:			"easeOutExpo"
 		},
 		dragevent = {
@@ -7146,8 +7143,6 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 			config.current_slide = slider.getCurrentNumber();
 			setHash(config.current_slide);
 			timenav.setMarker(config.current_slide, config.ease,config.duration);
-			console.log('** Running Slide Update **');
-			//moveMap()
 		};
 		
 		function onMarkerUpdate(e) {
@@ -7251,13 +7246,6 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 			
 			// EVENTS
 			VMM.bindEvent(global, onDataReady, config.events.data_ready);
-			
-			/*   //  Added by CDU – Jeff Ballweg 15/05/13  Scouting Event Bindings
-			console.log("Global variable is as follows ******************");
-			console.log("global: "+ global + " onDataReady (The Handler): "+ onDataReady + " Event Type (in config.events.data_ready) " + config.events.data_ready);			
-			console.log("Does this match? ******************");
-			console.log(window);
-			*/
 			VMM.bindEvent(global, showMessege, config.events.messege);
 			
 			VMM.fireEvent(global, config.events.messege, config.language.messages.loading_timeline);
@@ -7276,6 +7264,8 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 				VMM.fireEvent(global, config.events.messege, "No data source provided");
 				//VMM.Timeline.DataObj.getData(VMM.getElement(timeline_id));
 			}
+			
+			
 		};
 		
 		this.iframeLoaded = function() {
@@ -7349,7 +7339,6 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 				VMM.bindEvent($navigation, onTimeNavLoaded, "LOADED");
 				VMM.bindEvent($slider, onSlideUpdate, "UPDATE");
 				VMM.bindEvent($navigation, onMarkerUpdate, "UPDATE");
-				trace('value of $navigation is: '+$navigation.attr('class'));
 				
 				// INITIALIZE COMPONENTS
 				slider.init(_dates);
@@ -7357,7 +7346,12 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 			
 				// RESIZE EVENT LISTENERS
 				VMM.bindEvent(global, reSize, config.events.resize);
+				
+				
+				
 			}
+			
+			
 		};
 		
 		function ie7Build() {
@@ -7377,7 +7371,8 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 				} else {
 					c.text += VMM.createElement("h2", st + tag, "date");
 				}
-				*/				
+				*/
+				
 			}
 		};
 		
@@ -7458,6 +7453,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.text				= data.date[i].text;
 						_date.content			= "";
 						_date.tag				= data.date[i].tag;
+						_date.maploc			= data.date[i].maploc;
 						_date.slug				= data.date[i].slug;
 						_date.uniqueid			= VMM.Util.unique_ID(7);
 						_date.classname			= data.date[i].classname;
@@ -9071,7 +9067,6 @@ if(typeof VMM.Timeline != 'undefined' && typeof VMM.Timeline.TimeNav == 'undefin
 				
 				// MARKER CLICK
 				VMM.bindEvent(_marker_flag, onMarkerClick, "", {number: i});
-				console.log('Marker Flag is: ' + $(_marker_flag).attr('class') + '*****************');
 				VMM.bindEvent(_marker_flag, onMarkerHover, "mouseenter mouseleave", {number: i, elem:_marker_flag});
 				
 				_marker_obj = {
@@ -9291,7 +9286,6 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 					"startDate":"",
 		            "headline":"",
 		            "text":"",
-		            "maploc":"",							//  Added by CDU – Jeff Ballweg 14/05/13
 		            "asset":
 		            {
 		                "media":"",
@@ -9433,9 +9427,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 							} else if (typeof dd.gsx$titleslide != 'undefined') {
 								dd_type = dd.gsx$titleslide.$t;
 							}
-							
-							console.log('dd_type is ' + dd_type);
-							
+						
 							if (dd_type.match("start") || dd_type.match("title") ) {
 								data_obj.timeline.startDate		= getGVar(dd.gsx$startdate);
 								data_obj.timeline.headline		= getGVar(dd.gsx$headline);
@@ -9443,7 +9435,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								data_obj.timeline.asset.caption	= getGVar(dd.gsx$mediacaption);
 								data_obj.timeline.asset.credit	= getGVar(dd.gsx$mediacredit);
 								data_obj.timeline.text			= getGVar(dd.gsx$text);
-								data_obj.timeline.maploc	    = getGVar(dd.gsx$maplocation);	// Added by CDU – Jeff Ballweg 14 May 2013
+								data_obj.timeline.maploc		= getGVar(dd.gsx$maplocation);
 								data_obj.timeline.type			= "google spreadsheet";
 							} else if (dd_type.match("era")) {
 								var era = {
@@ -9451,8 +9443,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 									endDate:		getGVar(dd.gsx$enddate),
 									headline:		getGVar(dd.gsx$headline),
 									text:			getGVar(dd.gsx$text),
-									tag:			getGVar(dd.gsx$tag),
-									maploc:			getGVar(dd.gsx$maplocation)					//  Added by CDU – Jeff Ballweg 14/05/13
+									tag:			getGVar(dd.gsx$tag)
 								}
 								data_obj.timeline.era.push(era);
 							} else {
@@ -9463,7 +9454,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 										headline:		getGVar(dd.gsx$headline),
 										text:			getGVar(dd.gsx$text),
 										tag:			getGVar(dd.gsx$tag),
-										maploc:			getGVar(dd.gsx$maplocation),				//  Added by CDU – Jeff Ballweg 14/05/13
+										maploc:         getGVar(dd.gsx$maplocation),
 										asset: {
 											media:		getGVar(dd.gsx$media),
 											credit:		getGVar(dd.gsx$mediacredit),
@@ -9471,7 +9462,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 											thumbnail:	getGVar(dd.gsx$mediathumbnail)
 										}
 								};
-								
+							
 								data_obj.timeline.date.push(date);
 							}
 						};
@@ -9482,7 +9473,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 					
 					
 					if (is_valid) {
-						VMM.fireEvent(global, VMM.Timeline.Config.events.messege, "Finished Parsing Data from");
+						VMM.fireEvent(global, VMM.Timeline.Config.events.messege, "Finished Parsing Data");
 						VMM.fireEvent(global, VMM.Timeline.Config.events.data_ready, data_obj);
 					} else {
 						VMM.fireEvent(global, VMM.Timeline.Config.events.messege, VMM.Language.messages.loading + " Google Doc Data (cells)");
@@ -9567,7 +9558,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								headline:		"",
 								text:			"",
 								tag:			"",
-								maploc:			"",															//  Added by CDU – Jeff Ballweg 14/05/13
+								maploc:         "",
 								asset: {
 									media:		"",
 									credit:		"",
@@ -9592,8 +9583,6 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								
 							//trace(cell);
 							
-							// TODO: will have to add something here to make Map Location optional 				//  Added by CDU – Jeff Ballweg 14/05/13
-							
 							if (cell.row == 1) {
 								if (cell.content == "Start Date") {
 									column_name = "startDate";
@@ -9614,8 +9603,8 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								} else if (cell.content == "Type") {
 									column_name = "type";
 								} else if (cell.content == "Tag") {
-									column_name = "tag";;
-								} else if (cell.content == "Map Location") { 		// Added by CDU – Jeff Ballweg 14 May 2013
+									column_name = "tag";
+								} else if (cell.content == "Map Location") {
 									column_name = "maploc";
 								}
 								
@@ -9639,7 +9628,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 								data_obj.timeline.asset.caption	= date.caption;
 								data_obj.timeline.asset.credit	= date.credit;
 								data_obj.timeline.text			= date.text;
-								data_obj.timeline.maploc		= date.maploc;			//  Added by CDU – Jeff Ballweg 14/05/13
+								data_obj.timeline.maploc        = date.maploc;
 								data_obj.timeline.type			= "google spreadsheet";
 							} else if (date.type.match("era")) {
 								var era = {
@@ -9647,7 +9636,6 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 									endDate:		date.endDate,
 									headline:		date.headline,
 									text:			date.text,
-									maploc:			date.maploc,						//  Added by CDU – Jeff Ballweg 14/05/13
 									tag:			date.tag
 								}
 								data_obj.timeline.era.push(era);
@@ -9659,7 +9647,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 										headline:		date.headline,
 										text:			date.text,
 										tag:			date.tag,
-										maploc:			date.maploc,					//  Added by CDU – Jeff Ballweg 14/05/13
+										maploc:         date.maploc,
 										asset: {
 											media:		date.media,
 											credit:		date.credit,
@@ -9667,7 +9655,6 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 											thumbnail:	date.thumbnail
 										}
 								};
-							
 								data_obj.timeline.date.push(date);
 							}
 							
@@ -9976,7 +9963,7 @@ if (typeof VMM.Timeline !== 'undefined' && typeof VMM.Timeline.DataObj == 'undef
 		/*	TEMPLATE OBJECTS
 		================================================== */
 		data_template_obj: {  "timeline": { "headline":"", "description":"", "maploc":"", "asset": { "media":"", "credit":"", "caption":"" }, "date": [], "era":[] } },
-		date_obj: {"startDate":"2012,2,2,11,30", "headline":"", "text":"", "maploc":"", "asset": {"media":"http://youtu.be/vjVfu8-Wp6s", "credit":"", "caption":"" }, "tags":"Optional"}		//  Added by CDU – Jeff Ballweg 15/05/13 (see maploc entry)
+		date_obj: {"startDate":"2012,2,2,11,30", "headline":"", "text":"", "maploc":"", "asset": {"media":"http://youtu.be/vjVfu8-Wp6s", "credit":"", "caption":"" }, "tags":"Optional"}
 	
 	};
 	
